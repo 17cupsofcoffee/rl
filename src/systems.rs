@@ -13,8 +13,21 @@ impl<'a> System<'a> for MovementSystem {
 
     fn run(&mut self, (input, player_flags, mut positions): Self::SystemData) {
         for (_, position) in (&player_flags, &mut positions).join() {
-            position.x = (position.x + input.x_axis as i32).min(79).max(0);
-            position.y = (position.y + input.y_axis as i32).min(49).max(0);
+            if input.up {
+                position.y = (position.y - 1).max(0);
+            }
+
+            if input.down {
+                position.y = (position.y + 1).min(49);
+            }
+
+            if input.left {
+                position.x = (position.x - 1).max(0);
+            }
+
+            if input.right {
+                position.x = (position.x + 1).min(79);
+            }
         }
     }
 }

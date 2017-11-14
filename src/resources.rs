@@ -1,4 +1,6 @@
 pub struct Input {
-    pub x_axis: f32,
-    pub y_axis: f32,
+    pub up: bool,
+    pub down: bool,
+    pub left: bool,
+    pub right: bool,
 }

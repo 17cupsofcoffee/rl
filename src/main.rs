@@ -32,8 +32,10 @@ impl<'a> State<'a> {
         world.register::<components::Player>();
 
         world.add_resource(resources::Input {
-            x_axis: 0.0,
-            y_axis: 0.0,
+            up: false,
+            down: false,
+            left: false,
+            right: false,
         });
 
         let dispatcher = DispatcherBuilder::new()
@@ -118,10 +120,10 @@ impl<'a> EventHandler for State<'a> {
         let mut input = self.world.write_resource::<resources::Input>();
 
         match keycode {
-            Keycode::Up => input.y_axis = -1.0,
-            Keycode::Down => input.y_axis = 1.0,
-            Keycode::Left => input.x_axis = -1.0,
-            Keycode::Right => input.x_axis = 1.0,
+            Keycode::Up => input.up = true,
+            Keycode::Down => input.down = true,
+            Keycode::Left => input.left = true,
+            Keycode::Right => input.right = true,
             Keycode::Escape => ctx.quit().unwrap(),
             _ => (),
         }
@@ -131,8 +133,10 @@ impl<'a> EventHandler for State<'a> {
         let mut input = self.world.write_resource::<resources::Input>();
 
         match keycode {
-            Keycode::Up | Keycode::Down => input.y_axis = 0.0,
-            Keycode::Left | Keycode::Right => input.x_axis = 0.0,
+            Keycode::Up => input.up = false,
+            Keycode::Down => input.down = false,
+            Keycode::Left => input.left = false,
+            Keycode::Right => input.right = false,
             _ => (),
         }
     }
