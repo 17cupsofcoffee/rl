@@ -1,0 +1,8 @@
+[package]
+name = "rl"
+version = "0.1.0"
+authors = ["Joe Clay <27cupsofcoffee@gmail.com>"]
+
+[dependencies]
+ggez = { git = "https://github.com/ggez/ggez/" }
+specs = "0.10.0"
