@@ -36,8 +36,8 @@ impl Console {
             &self.font,
             DrawParam {
                 src: Rect::new(
-                    sprite_x as f32 * 0.0625,
-                    sprite_y as f32 * 0.0625,
+                    f32::from(sprite_x) * 0.0625,
+                    f32::from(sprite_y) * 0.0625,
                     0.0625,
                     0.0625,
                 ),

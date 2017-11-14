@@ -85,7 +85,7 @@ impl<'a> State<'a> {
 
 impl<'a> EventHandler for State<'a> {
     fn update(&mut self, _ctx: &mut Context) -> GameResult<()> {
-        self.dispatcher.dispatch(&mut self.world.res);
+        self.dispatcher.dispatch(&self.world.res);
         self.world.maintain();
 
         Ok(())
