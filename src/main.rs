@@ -73,9 +73,13 @@ impl<'a> State<'a> {
 }
 
 impl<'a> EventHandler for State<'a> {
-    fn update(&mut self, _ctx: &mut Context) -> GameResult<()> {
-        self.dispatcher.dispatch(&self.world.res);
-        self.world.maintain();
+    fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
+        const DESIRED_FPS: u32 = 60;
+
+        while timer::check_update_time(ctx, DESIRED_FPS) {
+            self.dispatcher.dispatch(&self.world.res);
+            self.world.maintain();
+        }
 
         Ok(())
     }
