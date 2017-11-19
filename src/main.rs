@@ -30,17 +30,22 @@ impl<'a> State<'a> {
         world.register::<components::Sprite>();
         world.register::<components::Tile>();
         world.register::<components::Player>();
+        world.register::<components::Energy>();
 
         world.add_resource(resources::Input::new());
+        world.add_resource(resources::TurnState::new());
 
         let dispatcher = DispatcherBuilder::new()
-            .add(systems::MovementSystem, "movement", &[])
+            .add(systems::GrantEnergy, "GrantEnergy", &[])
+            .add(systems::WaitForInput, "WaitForInput", &["GrantEnergy"])
+            .add(systems::Movement, "Movement", &["WaitForInput"])
             .build();
 
         world
             .create_entity()
             .with(components::Position::new(0, 0))
             .with(components::Sprite::new('@', graphics::WHITE))
+            .with(components::Energy::new(2, 2))
             .with(components::Player)
             .build();
 
@@ -48,6 +53,7 @@ impl<'a> State<'a> {
             .create_entity()
             .with(components::Position::new(16, 16))
             .with(components::Sprite::new('S', Color::new(0.0, 1.0, 0.0, 1.0)))
+            .with(components::Energy::new(0, 1))
             .build();
 
         // This is fairly dire

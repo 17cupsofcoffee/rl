@@ -15,3 +15,13 @@ impl Input {
         }
     }
 }
+
+pub struct TurnState {
+    pub waiting: bool,
+}
+
+impl TurnState {
+    pub fn new() -> TurnState {
+        TurnState { waiting: false }
+    }
+}

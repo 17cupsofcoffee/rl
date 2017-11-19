@@ -51,3 +51,18 @@ pub struct Player;
 impl Component for Player {
     type Storage = NullStorage<Self>;
 }
+
+pub struct Energy {
+    pub current: i32,
+    pub speed: i32,
+}
+
+impl Energy {
+    pub fn new(current: i32, speed: i32) -> Energy {
+        Energy { current, speed }
+    }
+}
+
+impl Component for Energy {
+    type Storage = VecStorage<Self>;
+}
