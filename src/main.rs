@@ -31,12 +31,7 @@ impl<'a> State<'a> {
         world.register::<components::Tile>();
         world.register::<components::Player>();
 
-        world.add_resource(resources::Input {
-            up: false,
-            down: false,
-            left: false,
-            right: false,
-        });
+        world.add_resource(resources::Input::new());
 
         let dispatcher = DispatcherBuilder::new()
             .add(systems::MovementSystem, "movement", &[])
@@ -44,21 +39,15 @@ impl<'a> State<'a> {
 
         world
             .create_entity()
-            .with(components::Position { x: 0, y: 0 })
-            .with(components::Sprite {
-                character: '@',
-                color: graphics::WHITE,
-            })
+            .with(components::Position::new(0, 0))
+            .with(components::Sprite::new('@', graphics::WHITE))
             .with(components::Player)
             .build();
 
         world
             .create_entity()
-            .with(components::Position { x: 16, y: 16 })
-            .with(components::Sprite {
-                character: 'S',
-                color: Color::new(0.0, 1.0, 0.0, 1.0),
-            })
+            .with(components::Position::new(16, 16))
+            .with(components::Sprite::new('S', Color::new(0.0, 1.0, 0.0, 1.0)))
             .build();
 
         // This is fairly dire
@@ -77,10 +66,8 @@ impl<'a> State<'a> {
     fn create_wall(world: &mut World, x: i32, y: i32) -> Entity {
         world
             .create_entity()
-            .with(components::Position { x, y })
-            .with(components::Tile {
-                color: Color::new(0.1, 0.1, 0.1, 1.0),
-            })
+            .with(components::Position::new(x, y))
+            .with(components::Tile::new(Color::new(0.1, 0.1, 0.1, 1.0)))
             .build()
     }
 }

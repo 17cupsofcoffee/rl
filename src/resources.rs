@@ -4,3 +4,14 @@ pub struct Input {
     pub left: bool,
     pub right: bool,
 }
+
+impl Input {
+    pub fn new() -> Input {
+        Input {
+            up: false,
+            down: false,
+            left: false,
+            right: false,
+        }
+    }
+}

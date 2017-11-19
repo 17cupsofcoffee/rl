@@ -6,6 +6,12 @@ pub struct Position {
     pub y: i32,
 }
 
+impl Position {
+    pub fn new(x: i32, y: i32) -> Position {
+        Position { x, y }
+    }
+}
+
 impl Component for Position {
     type Storage = VecStorage<Self>;
 }
@@ -15,12 +21,24 @@ pub struct Sprite {
     pub color: Color,
 }
 
+impl Sprite {
+    pub fn new(character: char, color: Color) -> Sprite {
+        Sprite { character, color }
+    }
+}
+
 impl Component for Sprite {
     type Storage = VecStorage<Self>;
 }
 
 pub struct Tile {
     pub color: Color,
+}
+
+impl Tile {
+    pub fn new(color: Color) -> Tile {
+        Tile { color }
+    }
 }
 
 impl Component for Tile {
