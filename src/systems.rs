@@ -96,6 +96,7 @@ impl<'a> System<'a> for BasicEnemyMovement {
             for (_, position, energy) in (&enemy_flags, &mut positions, &mut energy).join() {
                 if energy.current >= energy.speed {
                     position.x = position.x + 1;
+                    energy.current = 0;
                 }
             }
         }
