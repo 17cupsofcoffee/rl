@@ -31,6 +31,7 @@ impl<'a> State<'a> {
         world.register::<components::Tile>();
         world.register::<components::Player>();
         world.register::<components::Energy>();
+        world.register::<components::Enemy>();
 
         world.add_resource(resources::Input::new());
         world.add_resource(resources::TurnState::new());
@@ -38,7 +39,12 @@ impl<'a> State<'a> {
         let dispatcher = DispatcherBuilder::new()
             .add(systems::GrantEnergy, "GrantEnergy", &[])
             .add(systems::WaitForInput, "WaitForInput", &["GrantEnergy"])
-            .add(systems::Movement, "Movement", &["WaitForInput"])
+            .add(systems::PlayerMovement, "PlayerMovement", &["WaitForInput"])
+            .add(
+                systems::BasicEnemyMovement,
+                "BasicEnemyMovement",
+                &["WaitForInput"],
+            )
             .build();
 
         world
@@ -54,6 +60,7 @@ impl<'a> State<'a> {
             .with(components::Position::new(16, 16))
             .with(components::Sprite::new('S', Color::new(0.0, 1.0, 0.0, 1.0)))
             .with(components::Energy::new(0, 1))
+            .with(components::Enemy)
             .build();
 
         // This is fairly dire

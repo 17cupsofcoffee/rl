@@ -66,3 +66,9 @@ impl Energy {
 impl Component for Energy {
     type Storage = VecStorage<Self>;
 }
+
+pub struct Enemy;
+
+impl Component for Enemy {
+    type Storage = VecStorage<Self>;
+}

@@ -1,5 +1,5 @@
 use specs::{Fetch, FetchMut, Join, ReadStorage, System, WriteStorage};
-use components::{Energy, Player, Position};
+use components::{Enemy, Energy, Player, Position};
 use resources::{Input, TurnState};
 
 pub struct GrantEnergy;
@@ -36,9 +36,9 @@ impl<'a> System<'a> for WaitForInput {
     }
 }
 
-pub struct Movement;
+pub struct PlayerMovement;
 
-impl<'a> System<'a> for Movement {
+impl<'a> System<'a> for PlayerMovement {
     type SystemData = (
         Fetch<'a, Input>,
         FetchMut<'a, TurnState>,
@@ -75,6 +75,27 @@ impl<'a> System<'a> for Movement {
                     position.x = (position.x + 1).min(79);
                     energy.current = 0;
                     turn_state.waiting = false;
+                }
+            }
+        }
+    }
+}
+
+pub struct BasicEnemyMovement;
+
+impl<'a> System<'a> for BasicEnemyMovement {
+    type SystemData = (
+        Fetch<'a, TurnState>,
+        ReadStorage<'a, Enemy>,
+        WriteStorage<'a, Position>,
+        WriteStorage<'a, Energy>,
+    );
+
+    fn run(&mut self, (turn_state, enemy_flags, mut positions, mut energy): Self::SystemData) {
+        if turn_state.waiting == false {
+            for (_, position, energy) in (&enemy_flags, &mut positions, &mut energy).join() {
+                if energy.current >= energy.speed {
+                    position.x = position.x + 1;
                 }
             }
         }
