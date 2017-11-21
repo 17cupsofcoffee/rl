@@ -3,6 +3,7 @@ extern crate specs;
 
 mod components;
 mod console;
+mod entities;
 mod resources;
 mod systems;
 
@@ -11,9 +12,9 @@ use std::path::PathBuf;
 use ggez::{Context, GameResult};
 use ggez::conf::Conf;
 use ggez::event::{self, EventHandler, Keycode, Mod};
-use ggez::graphics::{self, Color, Image};
+use ggez::graphics::Image;
 use ggez::timer;
-use specs::{Dispatcher, DispatcherBuilder, Entity, Join, World};
+use specs::{Dispatcher, DispatcherBuilder, Join, World};
 use console::Console;
 
 struct State<'a> {
@@ -47,24 +48,9 @@ impl<'a> State<'a> {
             )
             .build();
 
-        world
-            .create_entity()
-            .with(components::Position::new(0, 0))
-            .with(components::Sprite::new('@', graphics::WHITE))
-            .with(components::Energy::new(2, 2))
-            .with(components::Player)
-            .build();
-
-        world
-            .create_entity()
-            .with(components::Position::new(16, 16))
-            .with(components::Sprite::new('S', Color::new(0.0, 1.0, 0.0, 1.0)))
-            .with(components::Energy::new(0, 1))
-            .with(components::Enemy)
-            .build();
-
-        // This is fairly dire
-        State::create_wall(&mut world, 1, 1);
+        entities::create_player(&mut world, 0, 0);
+        entities::create_snake(&mut world, 16, 16);
+        entities::create_wall(&mut world, 1, 1);
 
         let font = Image::new(ctx, "/terminal.png")?;
         let console = Console::new(font);
@@ -74,14 +60,6 @@ impl<'a> State<'a> {
             dispatcher,
             console,
         })
-    }
-
-    fn create_wall(world: &mut World, x: i32, y: i32) -> Entity {
-        world
-            .create_entity()
-            .with(components::Position::new(x, y))
-            .with(components::Tile::new(Color::new(0.1, 0.1, 0.1, 1.0)))
-            .build()
     }
 }
 
