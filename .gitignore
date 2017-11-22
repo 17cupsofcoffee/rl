@@ -1,2 +1,3 @@
 /target/
 **/*.rs.bk
+SDL2.dll
