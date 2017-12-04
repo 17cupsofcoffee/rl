@@ -28,7 +28,7 @@ impl Console {
     ) -> GameResult<()> {
         let codepoint = c as u8;
         let sprite_y = codepoint % 16;
-        let sprite_x = (codepoint - sprite_y) / 16;
+        let sprite_x = codepoint / 16;
 
         graphics::set_color(ctx, color)?;
         graphics::draw_ex(
