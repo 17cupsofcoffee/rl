@@ -31,7 +31,7 @@ impl<'a> State<'a> {
         world.register::<components::Sprite>();
         world.register::<components::Tile>();
         world.register::<components::Player>();
-        world.register::<components::Energy>();
+        world.register::<components::Movement>();
         world.register::<components::Enemy>();
 
         world.add_resource(resources::Input::new());
@@ -45,6 +45,11 @@ impl<'a> State<'a> {
                 systems::BasicEnemyMovement,
                 "BasicEnemyMovement",
                 &["WaitForInput"],
+            )
+            .add(
+                systems::ProcessMovement,
+                "ProcessMovement",
+                &["PlayerMovement", "BasicEnemyMovement"],
             )
             .build();
 

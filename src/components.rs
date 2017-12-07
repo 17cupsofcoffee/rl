@@ -1,3 +1,4 @@
+use std::collections::VecDeque;
 use ggez::graphics::Color;
 use specs::{Component, NullStorage, VecStorage};
 
@@ -52,24 +53,40 @@ impl Component for Player {
     type Storage = NullStorage<Self>;
 }
 
-pub struct Energy {
-    pub current: i32,
-    pub speed: i32,
-}
-
-impl Energy {
-    pub fn new(current: i32, speed: i32) -> Energy {
-        Energy { current, speed }
-    }
-}
-
-impl Component for Energy {
-    type Storage = VecStorage<Self>;
-}
-
 #[derive(Default)]
 pub struct Enemy;
 
 impl Component for Enemy {
     type Storage = NullStorage<Self>;
+}
+
+pub enum MoveAction {
+    Up,
+    Down,
+    Left,
+    Right,
+}
+
+pub struct Movement {
+    pub energy: i32,
+    pub speed: i32,
+    pub move_queue: VecDeque<MoveAction>,
+}
+
+impl Movement {
+    pub fn new(energy: i32, speed: i32) -> Movement {
+        Movement {
+            energy,
+            speed,
+            move_queue: VecDeque::new(),
+        }
+    }
+
+    pub fn ready(&self) -> bool {
+        self.energy >= self.speed
+    }
+}
+
+impl Component for Movement {
+    type Storage = VecStorage<Self>;
 }
