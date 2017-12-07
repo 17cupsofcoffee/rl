@@ -125,13 +125,11 @@ impl<'a> EventHandler for State<'a> {
 }
 
 fn run() -> GameResult<()> {
-    let conf = Conf {
-        window_title: "Generic Roguelike #7026".to_string(),
-        window_width: 80 * 8,
-        window_height: 50 * 8,
+    let mut conf = Conf::new();
 
-        ..Default::default()
-    };
+    conf.window_title = "Generic Roguelike #7026".to_string();
+    conf.window_mode.width = 80 * 8;
+    conf.window_mode.height = 50 * 8;
 
     let ctx = &mut Context::load_from_conf("rl", "17cupsofcoffee", conf)?;
 
