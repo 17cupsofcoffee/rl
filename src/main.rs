@@ -53,9 +53,16 @@ impl<'a> State<'a> {
             )
             .build();
 
-        entities::create_player(&mut world, 0, 0);
+        entities::create_player(&mut world, 2, 2);
         entities::create_snake(&mut world, 16, 16);
-        entities::create_wall(&mut world, 1, 1);
+
+        for x in 0..80 {
+            for y in 0..50 {
+                if x == 0 || x == 79 || y == 0 || y == 49 {
+                    entities::create_wall(&mut world, x, y);
+                }
+            }
+        }
 
         let font = Image::new(ctx, "/terminal.png")?;
         let console = Console::new(font);
