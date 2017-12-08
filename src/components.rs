@@ -1,5 +1,5 @@
 use std::collections::VecDeque;
-use ggez::graphics::Color;
+use tcod::colors::Color;
 use specs::{Component, NullStorage, VecStorage};
 
 pub struct Position {
