@@ -4,5 +4,5 @@ version = "0.1.0"
 authors = ["Joe Clay <27cupsofcoffee@gmail.com>"]
 
 [dependencies]
-ggez = { git = "https://github.com/ggez/ggez/" }
+tcod = "0.12.1"
 specs = "0.10.0"
