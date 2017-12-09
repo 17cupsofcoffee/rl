@@ -27,6 +27,7 @@ impl<'a> Game<'a> {
         world.register::<components::Player>();
         world.register::<components::Movement>();
         world.register::<components::Enemy>();
+        world.register::<components::Solid>();
 
         world.add_resource(resources::Input::new());
         world.add_resource(resources::TurnState::new());
@@ -50,13 +51,18 @@ impl<'a> Game<'a> {
         entities::create_player(&mut world, 2, 2);
         entities::create_snake(&mut world, 16, 16);
 
+        let mut map = resources::Map::new();
+
         for x in 0..80 {
             for y in 0..50 {
                 if x == 0 || x == 79 || y == 0 || y == 49 {
-                    entities::create_wall(&mut world, x, y);
+                    let tile = entities::create_wall(&mut world, x, y);
+                    map.tiles.insert((x, y), tile);
                 }
             }
         }
+
+        world.add_resource(map);
 
         let root_console = RootConsole::initializer()
             .size(80, 50)

@@ -27,5 +27,6 @@ pub fn create_wall(world: &mut World, x: i32, y: i32) -> Entity {
         .create_entity()
         .with(Position::new(x, y))
         .with(Tile::new(colors::GREY))
+        .with(Solid)
         .build()
 }

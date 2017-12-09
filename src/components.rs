@@ -90,3 +90,10 @@ impl Movement {
 impl Component for Movement {
     type Storage = VecStorage<Self>;
 }
+
+#[derive(Default)]
+pub struct Solid;
+
+impl Component for Solid {
+    type Storage = NullStorage<Self>;
+}

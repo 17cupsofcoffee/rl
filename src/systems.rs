@@ -1,6 +1,6 @@
 use specs::{Fetch, FetchMut, Join, ReadStorage, System, WriteStorage};
-use components::{Enemy, MoveAction, Movement, Player, Position};
-use resources::{Input, TurnState};
+use components::{Enemy, MoveAction, Movement, Player, Position, Solid};
+use resources::{Input, Map, TurnState};
 
 pub struct GrantEnergy;
 
@@ -98,39 +98,38 @@ pub struct ProcessMovement;
 impl<'a> System<'a> for ProcessMovement {
     type SystemData = (
         Fetch<'a, TurnState>,
+        Fetch<'a, Map>,
         WriteStorage<'a, Movement>,
         WriteStorage<'a, Position>,
+        ReadStorage<'a, Solid>,
     );
 
-    fn run(&mut self, (turn_state, mut movements, mut positions): Self::SystemData) {
+    fn run(
+        &mut self,
+        (turn_state, map, mut movements, mut positions, solid_tiles): Self::SystemData,
+    ) {
         if !turn_state.waiting {
             for (movement, position) in (&mut movements, &mut positions).join() {
-                let mut consume_action = false;
+                let (target_x, target_y) = match movement.move_queue.front() {
+                    Some(&MoveAction::Up) => (position.x, position.y - 1),
+                    Some(&MoveAction::Down) => (position.x, position.y + 1),
+                    Some(&MoveAction::Left) => (position.x - 1, position.y),
+                    Some(&MoveAction::Right) => (position.x + 1, position.y),
+                    _ => continue,
+                };
 
-                match movement.move_queue.front() {
-                    Some(&MoveAction::Up) => {
-                        position.y = (position.y - 1).max(0);
-                        consume_action = true;
+                movement.move_queue.pop_front();
+
+                if let Some(tile_id) = map.tiles.get(&(target_x, target_y)) {
+                    if let Some(_) = solid_tiles.get(*tile_id) {
+                        // move blocked
+                        continue;
                     }
-                    Some(&MoveAction::Down) => {
-                        position.y = (position.y + 1).min(49);
-                        consume_action = true;
-                    }
-                    Some(&MoveAction::Left) => {
-                        position.x = (position.x - 1).max(0);
-                        consume_action = true;
-                    }
-                    Some(&MoveAction::Right) => {
-                        position.x = (position.x + 1).min(79);
-                        consume_action = true;
-                    }
-                    _ => {}
                 }
 
-                if consume_action {
-                    movement.energy = 0;
-                    movement.move_queue.pop_front();
-                }
+                position.x = target_x;
+                position.y = target_y;
+                movement.energy = 0;
             }
         }
     }
