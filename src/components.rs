@@ -46,20 +46,6 @@ impl Component for Tile {
     type Storage = VecStorage<Self>;
 }
 
-#[derive(Default)]
-pub struct Player;
-
-impl Component for Player {
-    type Storage = NullStorage<Self>;
-}
-
-#[derive(Default)]
-pub struct Enemy;
-
-impl Component for Enemy {
-    type Storage = NullStorage<Self>;
-}
-
 pub enum MoveAction {
     Up,
     Down,
@@ -68,14 +54,16 @@ pub enum MoveAction {
 }
 
 pub struct Movement {
+    pub player_input: bool,
     pub energy: i32,
     pub speed: i32,
     pub move_queue: VecDeque<MoveAction>,
 }
 
 impl Movement {
-    pub fn new(energy: i32, speed: i32) -> Movement {
+    pub fn new(player_input: bool, energy: i32, speed: i32) -> Movement {
         Movement {
+            player_input,
             energy,
             speed,
             move_queue: VecDeque::new(),

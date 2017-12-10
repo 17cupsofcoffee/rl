@@ -24,9 +24,7 @@ impl<'a> Game<'a> {
         world.register::<components::Position>();
         world.register::<components::Sprite>();
         world.register::<components::Tile>();
-        world.register::<components::Player>();
         world.register::<components::Movement>();
-        world.register::<components::Enemy>();
         world.register::<components::Solid>();
 
         world.add_resource(resources::Input::new());

@@ -7,8 +7,7 @@ pub fn create_player(world: &mut World, x: i32, y: i32) -> Entity {
         .create_entity()
         .with(Position::new(x, y))
         .with(Sprite::new('@', colors::WHITE))
-        .with(Movement::new(2, 2))
-        .with(Player)
+        .with(Movement::new(true, 2, 2))
         .build()
 }
 
@@ -17,8 +16,7 @@ pub fn create_snake(world: &mut World, x: i32, y: i32) -> Entity {
         .create_entity()
         .with(Position::new(x, y))
         .with(Sprite::new('S', colors::GREEN))
-        .with(Movement::new(0, 1))
-        .with(Enemy)
+        .with(Movement::new(false, 0, 1))
         .build()
 }
 
