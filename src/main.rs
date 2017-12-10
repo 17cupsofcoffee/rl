@@ -31,9 +31,9 @@ impl<'a> Game<'a> {
         world.add_resource(resources::TurnState::new());
 
         let dispatcher = DispatcherBuilder::new()
-            .add(systems::GrantEnergy, "GrantEnergy", &[])
-            .add(systems::WaitForInput, "WaitForInput", &["GrantEnergy"])
-            .add(systems::PlayerMovement, "PlayerMovement", &["WaitForInput"])
+            .add(systems::WaitForInput, "WaitForInput", &[])
+            .add(systems::GrantEnergy, "GrantEnergy", &["WaitForInput"])
+            .add(systems::PlayerMovement, "PlayerMovement", &["GrantEnergy"])
             .add(
                 systems::BasicEnemyMovement,
                 "BasicEnemyMovement",
