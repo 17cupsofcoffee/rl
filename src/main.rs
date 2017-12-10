@@ -47,7 +47,8 @@ impl<'a> Game<'a> {
             .build();
 
         entities::create_player(&mut world, 2, 2);
-        entities::create_snake(&mut world, 16, 16);
+        entities::create_snake(&mut world, 2, 16);
+        entities::create_rat(&mut world, 2, 18);
 
         let mut map = resources::Map::new();
 

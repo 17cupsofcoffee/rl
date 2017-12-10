@@ -20,6 +20,15 @@ pub fn create_snake(world: &mut World, x: i32, y: i32) -> Entity {
         .build()
 }
 
+pub fn create_rat(world: &mut World, x: i32, y: i32) -> Entity {
+    world
+        .create_entity()
+        .with(Position::new(x, y))
+        .with(Sprite::new('r', colors::SEPIA))
+        .with(Movement::new(false, 0, 4))
+        .build()
+}
+
 pub fn create_wall(world: &mut World, x: i32, y: i32) -> Entity {
     world
         .create_entity()
