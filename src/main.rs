@@ -12,7 +12,7 @@ use std::path::PathBuf;
 use ggez::{Context, ContextBuilder, GameResult};
 use ggez::conf::{WindowSetup, WindowMode};
 use ggez::event::{self, EventHandler, Keycode, Mod};
-use ggez::graphics::Image;
+use ggez::graphics::{self, Image};
 use ggez::timer;
 use specs::{Dispatcher, DispatcherBuilder, Join, World};
 use console::Console;
@@ -77,7 +77,7 @@ impl<'a> State<'a> {
 
 impl<'a> EventHandler for State<'a> {
     fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
-        const DESIRED_FPS: u32 = 60;
+        const DESIRED_FPS: u32 = 30;
 
         while timer::check_update_time(ctx, DESIRED_FPS) {
             self.dispatcher.dispatch(&self.world.res);
@@ -88,7 +88,10 @@ impl<'a> EventHandler for State<'a> {
     }
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
-        self.console.clear(ctx);
+        graphics::clear(ctx);
+        graphics::set_background_color(ctx, graphics::BLACK);
+
+        self.console.clear();
 
         let positions = self.world.read::<components::Position>();
         let sprites = self.world.read::<components::Sprite>();
@@ -96,15 +99,16 @@ impl<'a> EventHandler for State<'a> {
 
         for (position, tile) in (&positions, &tiles).join() {
             self.console
-                .set_bg(ctx, position.x, position.y, tile.color)?;
+                .set_bg(position.x, position.y, tile.color);
         }
 
         for (position, sprite) in (&positions, &sprites).join() {
             self.console
-                .set_char(ctx, sprite.character, position.x, position.y, sprite.color)?;
+                .set_char(position.x, position.y, sprite.character, sprite.color);
         }
 
-        self.console.present(ctx);
+        self.console.draw(ctx)?;
+        graphics::present(ctx);
 
         timer::yield_now();
         Ok(())
