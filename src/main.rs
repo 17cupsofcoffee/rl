@@ -9,8 +9,8 @@ mod systems;
 
 use std::env;
 use std::path::PathBuf;
-use ggez::{Context, GameResult};
-use ggez::conf::Conf;
+use ggez::{Context, ContextBuilder, GameResult};
+use ggez::conf::{WindowSetup, WindowMode};
 use ggez::event::{self, EventHandler, Keycode, Mod};
 use ggez::graphics::Image;
 use ggez::timer;
@@ -137,21 +137,18 @@ impl<'a> EventHandler for State<'a> {
 }
 
 fn run() -> GameResult<()> {
-    let mut conf = Conf::new();
-
-    conf.window_title = "Generic Roguelike #7026".to_string();
-    conf.window_mode.width = 80 * 8;
-    conf.window_mode.height = 50 * 8;
-
-    let ctx = &mut Context::load_from_conf("rl", "17cupsofcoffee", conf)?;
+    let mut cb = ContextBuilder::new("rl", "17cupsofcoffee")
+        .window_setup(WindowSetup::default().title("Generic Roguelike #7026"))
+        .window_mode(WindowMode::default().dimensions(80 * 8, 50 * 8));
 
     if let Ok(manifest_dir) = env::var("CARGO_MANIFEST_DIR") {
         let mut path = PathBuf::from(manifest_dir);
         path.push("resources");
-        ctx.filesystem.mount(&path, true);
         println!("Adding path {:?}", path);
+        cb = cb.add_resource_path(path);
     }
 
+    let ctx = &mut cb.build()?;
     let state = &mut State::new(ctx)?;
 
     event::run(ctx, state)

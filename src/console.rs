@@ -42,8 +42,8 @@ impl Console {
                     0.0625,
                 ),
                 dest: Point2::new(
-                    (x * self.cell_size + 4) as f32,
-                    (y * self.cell_size + 4) as f32,
+                    (x * self.cell_size) as f32,
+                    (y * self.cell_size) as f32,
                 ),
 
                 ..Default::default()
@@ -57,8 +57,8 @@ impl Console {
             ctx,
             DrawMode::Fill,
             Rect::new(
-                (x * self.cell_size + 4) as f32,
-                (y * self.cell_size + 4) as f32,
+                (x * self.cell_size) as f32,
+                (y * self.cell_size) as f32,
                 self.cell_size as f32,
                 self.cell_size as f32,
             ),
