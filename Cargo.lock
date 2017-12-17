@@ -324,7 +324,7 @@ dependencies = [
 [[package]]
 name = "ggez"
 version = "0.4.0-rc.0"
-source = "git+https://github.com/ggez/ggez/#a5e6ae6fe7ba1c25c43463802e7462b6f3d93e6c"
+source = "git+https://github.com/ggez/ggez/#b208c6c8b22e48ea2a7b4d7fe02bd88454330640"
 dependencies = [
  "app_dirs 1.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "euclid 0.15.6 (registry+https://github.com/rust-lang/crates.io-index)",
