@@ -46,23 +46,6 @@ impl<'a> Game<'a> {
             )
             .build();
 
-        entities::create_player(&mut world, 2, 2);
-        entities::create_snake(&mut world, 2, 16);
-        entities::create_rat(&mut world, 2, 18);
-
-        let mut map = resources::Map::new();
-
-        for x in 0..80 {
-            for y in 0..50 {
-                if x == 0 || x == 79 || y == 0 || y == 49 {
-                    let tile = entities::create_wall(&mut world, x, y);
-                    map.tiles.insert((x, y), tile);
-                }
-            }
-        }
-
-        world.add_resource(map);
-
         let root_console = RootConsole::initializer()
             .size(80, 50)
             .title("Generic Roguelike #7026")
@@ -117,6 +100,27 @@ impl<'a> Game<'a> {
 
         self.root_console.flush();
     }
+
+    fn generate_map(&mut self) {
+        self.world.delete_all();
+
+        let mut map = resources::Map::new();
+
+        for x in 0..80 {
+            for y in 0..50 {
+                if x == 0 || x == 79 || y == 0 || y == 49 { 
+                    let tile = entities::create_wall(&mut self.world, x, y);
+                    map.tiles.insert((x, y), tile);
+                }
+            }
+        }
+
+        entities::create_player(&mut self.world, 2, 2);
+        entities::create_snake(&mut self.world, 2, 16);
+        entities::create_rat(&mut self.world, 2, 18);
+
+        self.world.add_resource(map);
+    }
 }
 
 fn main() {
@@ -124,6 +128,8 @@ fn main() {
     system::set_fps(30);
 
     let mut game = Game::new();
+
+    game.generate_map();
 
     while !game.root_console.window_closed() {
         game.draw();
