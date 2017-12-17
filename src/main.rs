@@ -30,17 +30,16 @@ impl<'a> State<'a> {
         world.register::<components::Position>();
         world.register::<components::Sprite>();
         world.register::<components::Tile>();
-        world.register::<components::Player>();
         world.register::<components::Movement>();
-        world.register::<components::Enemy>();
+        world.register::<components::Solid>();
 
         world.add_resource(resources::Input::new());
         world.add_resource(resources::TurnState::new());
 
         let dispatcher = DispatcherBuilder::new()
-            .add(systems::GrantEnergy, "GrantEnergy", &[])
-            .add(systems::WaitForInput, "WaitForInput", &["GrantEnergy"])
-            .add(systems::PlayerMovement, "PlayerMovement", &["WaitForInput"])
+            .add(systems::WaitForInput, "WaitForInput", &[])
+            .add(systems::GrantEnergy, "GrantEnergy", &["WaitForInput"])
+            .add(systems::PlayerMovement, "PlayerMovement", &["GrantEnergy"])
             .add(
                 systems::BasicEnemyMovement,
                 "BasicEnemyMovement",
@@ -53,17 +52,6 @@ impl<'a> State<'a> {
             )
             .build();
 
-        entities::create_player(&mut world, 2, 2);
-        entities::create_snake(&mut world, 16, 16);
-
-        for x in 0..80 {
-            for y in 0..50 {
-                if x == 0 || x == 79 || y == 0 || y == 49 {
-                    entities::create_wall(&mut world, x, y);
-                }
-            }
-        }
-
         let font = Image::new(ctx, "/terminal.png")?;
         let console = Console::new(font);
 
@@ -72,6 +60,27 @@ impl<'a> State<'a> {
             dispatcher,
             console,
         })
+    }
+
+    fn generate_map(&mut self) {
+        self.world.delete_all();
+
+        let mut map = resources::Map::new();
+
+        for x in 0..80 {
+            for y in 0..50 {
+                if x == 0 || x == 79 || y == 0 || y == 49 { 
+                    let tile = entities::create_wall(&mut self.world, x, y);
+                    map.tiles.insert((x, y), tile);
+                }
+            }
+        }
+
+        entities::create_player(&mut self.world, 2, 2);
+        entities::create_snake(&mut self.world, 2, 16);
+        entities::create_rat(&mut self.world, 2, 18);
+
+        self.world.add_resource(map);
     }
 }
 
@@ -114,29 +123,29 @@ impl<'a> EventHandler for State<'a> {
         Ok(())
     }
 
-    fn key_down_event(&mut self, ctx: &mut Context, keycode: Keycode, _keymod: Mod, _repeat: bool) {
-        let mut input = self.world.write_resource::<resources::Input>();
-
-        match keycode {
-            Keycode::Up => input.up = true,
-            Keycode::Down => input.down = true,
-            Keycode::Left => input.left = true,
-            Keycode::Right => input.right = true,
-            Keycode::Escape => ctx.quit().unwrap(),
-            _ => (),
-        }
-    }
-
-    fn key_up_event(&mut self, _ctx: &mut Context, keycode: Keycode, _keymod: Mod, _repeat: bool) {
-        let mut input = self.world.write_resource::<resources::Input>();
-
-        match keycode {
-            Keycode::Up => input.up = false,
-            Keycode::Down => input.down = false,
-            Keycode::Left => input.left = false,
-            Keycode::Right => input.right = false,
-            _ => (),
-        }
+    fn key_down_event(&mut self, ctx: &mut Context, keycode: Keycode, _keymod: Mod, _repeat: bool) { 
+        let mut input = self.world.write_resource::<resources::Input>(); 
+ 
+        match keycode { 
+            Keycode::Up => input.up = true, 
+            Keycode::Down => input.down = true, 
+            Keycode::Left => input.left = true, 
+            Keycode::Right => input.right = true, 
+            Keycode::Escape => ctx.quit().unwrap(), 
+            _ => (), 
+        } 
+    } 
+ 
+    fn key_up_event(&mut self, _ctx: &mut Context, keycode: Keycode, _keymod: Mod, _repeat: bool) { 
+        let mut input = self.world.write_resource::<resources::Input>(); 
+ 
+        match keycode { 
+            Keycode::Up => input.up = false, 
+            Keycode::Down => input.down = false, 
+            Keycode::Left => input.left = false, 
+            Keycode::Right => input.right = false, 
+            _ => (), 
+        } 
     }
 }
 
@@ -154,6 +163,8 @@ fn run() -> GameResult<()> {
 
     let ctx = &mut cb.build()?;
     let state = &mut State::new(ctx)?;
+
+    state.generate_map();
 
     event::run(ctx, state)
 }
