@@ -148,7 +148,7 @@ impl<'a> EventHandler for State<'a> {
     }
 }
 
-fn run() -> GameResult<()> {
+fn main() -> GameResult<()> {
     let mut cb = ContextBuilder::new("rl", "17cupsofcoffee")
         .window_setup(WindowSetup::default().title("Generic Roguelike #7026"))
         .window_mode(WindowMode::default().dimensions(80 * 8, 50 * 8));
@@ -166,11 +166,4 @@ fn run() -> GameResult<()> {
     state.generate_map();
 
     event::run(ctx, state)
-}
-
-fn main() {
-    match run() {
-        Ok(_) => println!("Game exited cleanly."),
-        Err(e) => println!("Error: {}", e),
-    }
 }
