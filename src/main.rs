@@ -7,15 +7,15 @@ mod entities;
 mod resources;
 mod systems;
 
-use std::env;
-use std::path::PathBuf;
-use ggez::{Context, ContextBuilder, GameResult};
-use ggez::conf::{WindowSetup, WindowMode};
+use console::Console;
+use ggez::conf::{WindowMode, WindowSetup};
 use ggez::event::{self, EventHandler, Keycode, Mod};
 use ggez::graphics::{self, Image};
 use ggez::timer;
+use ggez::{Context, ContextBuilder, GameResult};
 use specs::{Dispatcher, DispatcherBuilder, Join, World};
-use console::Console;
+use std::env;
+use std::path::PathBuf;
 
 struct State<'a> {
     world: World,
@@ -69,7 +69,7 @@ impl<'a> State<'a> {
 
         for x in 0..80 {
             for y in 0..50 {
-                if x == 0 || x == 79 || y == 0 || y == 49 { 
+                if x == 0 || x == 79 || y == 0 || y == 49 {
                     let tile = entities::create_wall(&mut self.world, x, y);
                     map.tiles.insert((x, y), tile);
                 }
@@ -107,8 +107,7 @@ impl<'a> EventHandler for State<'a> {
         let tiles = self.world.read::<components::Tile>();
 
         for (position, tile) in (&positions, &tiles).join() {
-            self.console
-                .set_bg(position.x, position.y, tile.color);
+            self.console.set_bg(position.x, position.y, tile.color);
         }
 
         for (position, sprite) in (&positions, &sprites).join() {
@@ -123,29 +122,29 @@ impl<'a> EventHandler for State<'a> {
         Ok(())
     }
 
-    fn key_down_event(&mut self, ctx: &mut Context, keycode: Keycode, _keymod: Mod, _repeat: bool) { 
-        let mut input = self.world.write_resource::<resources::Input>(); 
- 
-        match keycode { 
-            Keycode::Up => input.up = true, 
-            Keycode::Down => input.down = true, 
-            Keycode::Left => input.left = true, 
-            Keycode::Right => input.right = true, 
-            Keycode::Escape => ctx.quit().unwrap(), 
-            _ => (), 
-        } 
-    } 
- 
-    fn key_up_event(&mut self, _ctx: &mut Context, keycode: Keycode, _keymod: Mod, _repeat: bool) { 
-        let mut input = self.world.write_resource::<resources::Input>(); 
- 
-        match keycode { 
-            Keycode::Up => input.up = false, 
-            Keycode::Down => input.down = false, 
-            Keycode::Left => input.left = false, 
-            Keycode::Right => input.right = false, 
-            _ => (), 
-        } 
+    fn key_down_event(&mut self, ctx: &mut Context, keycode: Keycode, _keymod: Mod, _repeat: bool) {
+        let mut input = self.world.write_resource::<resources::Input>();
+
+        match keycode {
+            Keycode::Up => input.up = true,
+            Keycode::Down => input.down = true,
+            Keycode::Left => input.left = true,
+            Keycode::Right => input.right = true,
+            Keycode::Escape => ctx.quit().unwrap(),
+            _ => (),
+        }
+    }
+
+    fn key_up_event(&mut self, _ctx: &mut Context, keycode: Keycode, _keymod: Mod, _repeat: bool) {
+        let mut input = self.world.write_resource::<resources::Input>();
+
+        match keycode {
+            Keycode::Up => input.up = false,
+            Keycode::Down => input.down = false,
+            Keycode::Left => input.left = false,
+            Keycode::Right => input.right = false,
+            _ => (),
+        }
     }
 }
 

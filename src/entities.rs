@@ -1,6 +1,6 @@
+use components::*;
 use ggez::graphics::{self, Color};
 use specs::{Entity, World};
-use components::*;
 
 pub fn create_player(world: &mut World, x: i32, y: i32) -> Entity {
     world

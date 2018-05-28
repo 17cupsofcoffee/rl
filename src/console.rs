@@ -1,6 +1,6 @@
-use ggez::{Context, GameResult};
-use ggez::graphics::{self, Color, DrawParam, Image, Point2, Rect};
 use ggez::graphics::spritebatch::SpriteBatch;
+use ggez::graphics::{self, Color, DrawParam, Image, Point2, Rect};
+use ggez::{Context, GameResult};
 
 #[derive(Clone)]
 struct ConsoleCell {
@@ -21,30 +21,30 @@ impl Console {
 
         Console {
             spritebatch: SpriteBatch::new(font),
-            cells: vec![ConsoleCell {
-                glyph: ' ',
-                foreground: Color::new(1.0, 1.0, 1.0, 1.0),
-                background: Color::new(0.0, 0.0, 0.0, 1.0),
-            }; 80 * 50],
+            cells: vec![
+                ConsoleCell {
+                    glyph: ' ',
+                    foreground: Color::new(1.0, 1.0, 1.0, 1.0),
+                    background: Color::new(0.0, 0.0, 0.0, 1.0),
+                };
+                80 * 50
+            ],
             cell_size,
         }
     }
 
     pub fn clear(&mut self) {
-        self.cells = vec![ConsoleCell {
-            glyph: ' ',
-            foreground: Color::new(1.0, 1.0, 1.0, 1.0),
-            background: Color::new(0.0, 0.0, 0.0, 1.0),
-        }; 80 * 50];
+        self.cells = vec![
+            ConsoleCell {
+                glyph: ' ',
+                foreground: Color::new(1.0, 1.0, 1.0, 1.0),
+                background: Color::new(0.0, 0.0, 0.0, 1.0),
+            };
+            80 * 50
+        ];
     }
 
-    pub fn set_char(
-        &mut self,
-        x: i32,
-        y: i32,
-        glyph: char,
-        color: Color,
-    ) {
+    pub fn set_char(&mut self, x: i32, y: i32, glyph: char, color: Color) {
         let cell = &mut self.cells[(x + 80 * y) as usize];
         cell.glyph = glyph;
         cell.foreground = color;
@@ -57,7 +57,7 @@ impl Console {
     pub fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
         for (i, cell) in self.cells.iter().enumerate() {
             let (x, y) = (i % 80, i / 80);
-            
+
             let sprite_x = 219 / 16;
             let sprite_y = 219 % 16;
 
@@ -68,10 +68,7 @@ impl Console {
                     0.0625,
                     0.0625,
                 ),
-                dest: Point2::new(
-                    self.cell_size * x as f32,
-                    self.cell_size * y as f32,
-                ),
+                dest: Point2::new(self.cell_size * x as f32, self.cell_size * y as f32),
                 color: Some(cell.background),
 
                 ..Default::default()
@@ -88,10 +85,7 @@ impl Console {
                     0.0625,
                     0.0625,
                 ),
-                dest: Point2::new(
-                    self.cell_size * x as f32,
-                    self.cell_size * y as f32,
-                ),
+                dest: Point2::new(self.cell_size * x as f32, self.cell_size * y as f32),
                 color: Some(cell.foreground),
 
                 ..Default::default()

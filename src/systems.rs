@@ -1,6 +1,6 @@
-use specs::{Fetch, FetchMut, Join, ReadStorage, System, WriteStorage};
 use components::{MoveAction, Movement, Position, Solid};
 use resources::{Input, Map, TurnState};
+use specs::{Fetch, FetchMut, Join, ReadStorage, System, WriteStorage};
 
 pub struct GrantEnergy;
 
