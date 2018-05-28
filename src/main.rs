@@ -1,24 +1,30 @@
+extern crate ggez;
 extern crate specs;
-extern crate tcod;
 
 mod components;
+mod console;
 mod entities;
 mod resources;
 mod systems;
 
-use tcod::{BackgroundFlag, Console, RootConsole};
-use tcod::input::{self, Event, KeyCode};
-use tcod::system;
+use console::Console;
+use ggez::conf::{WindowMode, WindowSetup};
+use ggez::event::{self, EventHandler, Keycode, Mod};
+use ggez::graphics::{self, Image};
+use ggez::timer;
+use ggez::{Context, ContextBuilder, GameResult};
 use specs::{Dispatcher, DispatcherBuilder, Join, World};
+use std::env;
+use std::path::PathBuf;
 
-struct Game<'a> {
+struct State<'a> {
     world: World,
     dispatcher: Dispatcher<'a, 'a>,
-    root_console: RootConsole,
+    console: Console,
 }
 
-impl<'a> Game<'a> {
-    fn new() -> Game<'a> {
+impl<'a> State<'a> {
+    fn new(ctx: &mut Context) -> GameResult<State<'a>> {
         let mut world = World::new();
 
         world.register::<components::Position>();
@@ -46,59 +52,14 @@ impl<'a> Game<'a> {
             )
             .build();
 
-        let root_console = RootConsole::initializer()
-            .size(80, 50)
-            .title("Generic Roguelike #7026")
-            .init();
+        let font = Image::new(ctx, "/terminal.png")?;
+        let console = Console::new(font);
 
-        Game {
+        Ok(State {
             world,
             dispatcher,
-            root_console,
-        }
-    }
-
-    fn update(&mut self) {
-        while let Some((_, Event::Key(key))) = input::check_for_event(input::KEY) {
-            let mut input_state = self.world.write_resource::<resources::Input>();
-
-            match key.code {
-                KeyCode::Up => input_state.up = key.pressed,
-                KeyCode::Down => input_state.down = key.pressed,
-                KeyCode::Left => input_state.left = key.pressed,
-                KeyCode::Right => input_state.right = key.pressed,
-                _ => {}
-            }
-        }
-
-        self.dispatcher.dispatch(&self.world.res);
-        self.world.maintain();
-    }
-
-    fn draw(&mut self) {
-        self.root_console.clear();
-
-        let positions = self.world.read::<components::Position>();
-        let sprites = self.world.read::<components::Sprite>();
-        let tiles = self.world.read::<components::Tile>();
-
-        for (position, tile) in (&positions, &tiles).join() {
-            self.root_console.set_char_background(
-                position.x,
-                position.y,
-                tile.color,
-                BackgroundFlag::Set,
-            );
-        }
-
-        for (position, sprite) in (&positions, &sprites).join() {
-            self.root_console
-                .set_char(position.x, position.y, sprite.character);
-            self.root_console
-                .set_char_foreground(position.x, position.y, sprite.color);
-        }
-
-        self.root_console.flush();
+            console,
+        })
     }
 
     fn generate_map(&mut self) {
@@ -108,7 +69,7 @@ impl<'a> Game<'a> {
 
         for x in 0..80 {
             for y in 0..50 {
-                if x == 0 || x == 79 || y == 0 || y == 49 { 
+                if x == 0 || x == 79 || y == 0 || y == 49 {
                     let tile = entities::create_wall(&mut self.world, x, y);
                     map.tiles.insert((x, y), tile);
                 }
@@ -123,16 +84,93 @@ impl<'a> Game<'a> {
     }
 }
 
+impl<'a> EventHandler for State<'a> {
+    fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
+        const DESIRED_FPS: u32 = 30;
+
+        while timer::check_update_time(ctx, DESIRED_FPS) {
+            self.dispatcher.dispatch(&self.world.res);
+            self.world.maintain();
+        }
+
+        Ok(())
+    }
+
+    fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
+        graphics::clear(ctx);
+        graphics::set_background_color(ctx, graphics::BLACK);
+
+        self.console.clear();
+
+        let positions = self.world.read::<components::Position>();
+        let sprites = self.world.read::<components::Sprite>();
+        let tiles = self.world.read::<components::Tile>();
+
+        for (position, tile) in (&positions, &tiles).join() {
+            self.console.set_bg(position.x, position.y, tile.color);
+        }
+
+        for (position, sprite) in (&positions, &sprites).join() {
+            self.console
+                .set_char(position.x, position.y, sprite.character, sprite.color);
+        }
+
+        self.console.draw(ctx)?;
+        graphics::present(ctx);
+
+        timer::yield_now();
+        Ok(())
+    }
+
+    fn key_down_event(&mut self, ctx: &mut Context, keycode: Keycode, _keymod: Mod, _repeat: bool) {
+        let mut input = self.world.write_resource::<resources::Input>();
+
+        match keycode {
+            Keycode::Up => input.up = true,
+            Keycode::Down => input.down = true,
+            Keycode::Left => input.left = true,
+            Keycode::Right => input.right = true,
+            Keycode::Escape => ctx.quit().unwrap(),
+            _ => (),
+        }
+    }
+
+    fn key_up_event(&mut self, _ctx: &mut Context, keycode: Keycode, _keymod: Mod, _repeat: bool) {
+        let mut input = self.world.write_resource::<resources::Input>();
+
+        match keycode {
+            Keycode::Up => input.up = false,
+            Keycode::Down => input.down = false,
+            Keycode::Left => input.left = false,
+            Keycode::Right => input.right = false,
+            _ => (),
+        }
+    }
+}
+
+fn run() -> GameResult<()> {
+    let mut cb = ContextBuilder::new("rl", "17cupsofcoffee")
+        .window_setup(WindowSetup::default().title("Generic Roguelike #7026"))
+        .window_mode(WindowMode::default().dimensions(80 * 8, 50 * 8));
+
+    if let Ok(manifest_dir) = env::var("CARGO_MANIFEST_DIR") {
+        let mut path = PathBuf::from(manifest_dir);
+        path.push("resources");
+        println!("Adding path {:?}", path);
+        cb = cb.add_resource_path(path);
+    }
+
+    let ctx = &mut cb.build()?;
+    let state = &mut State::new(ctx)?;
+
+    state.generate_map();
+
+    event::run(ctx, state)
+}
+
 fn main() {
-    // TODO: Uncouple frame rate from world tick rate
-    system::set_fps(30);
-
-    let mut game = Game::new();
-
-    game.generate_map();
-
-    while !game.root_console.window_closed() {
-        game.draw();
-        game.update();
+    match run() {
+        Ok(_) => println!("Game exited cleanly."),
+        Err(e) => println!("Error: {}", e),
     }
 }

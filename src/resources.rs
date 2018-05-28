@@ -1,5 +1,5 @@
-use std::collections::HashMap;
 use specs::Entity;
+use std::collections::HashMap;
 
 pub struct Input {
     pub up: bool,

@@ -1,6 +1,6 @@
-use std::collections::VecDeque;
-use tcod::colors::Color;
+use ggez::graphics::Color;
 use specs::{Component, NullStorage, VecStorage};
+use std::collections::VecDeque;
 
 pub struct Position {
     pub x: i32,

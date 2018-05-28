@@ -4,5 +4,8 @@ version = "0.1.0"
 authors = ["Joe Clay <27cupsofcoffee@gmail.com>"]
 
 [dependencies]
-tcod = "0.12.1"
+ggez = "0.4.2"
 specs = "0.10.0"
+
+[profile.dev]
+opt-level = 2
