@@ -17,9 +17,7 @@ pub struct Console {
 
 impl Console {
     pub fn new(font: Texture) -> Console {
-        // TODO: Un-hardcode this once Tetra exposes texture sizes...
-        // let cell_size = (font.width() / 16) as f32;
-        let cell_size = (128 / 16) as f32;
+        let cell_size = (font.width() / 16) as f32;
 
         Console {
             font,
@@ -90,11 +88,6 @@ impl Console {
                     .color(cell.foreground)
                     .clip(Rectangle::new(sprite_x, sprite_y, 8.0, 8.0)),
             );
-
-            // TODO: Remove this once Tetra gets better autoflushing behavior
-            if i % 512 == 511 {
-                graphics::flush(ctx);
-            }
         }
     }
 }
