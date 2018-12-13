@@ -5,7 +5,7 @@
 This is a simple (and extremely work-in-progress) roguelike, written in Rust.
 It uses:
 
-* [GGEZ](https://github.com/ggez/ggez/) - rendering/input/windowing/etc
+* [Tetra](https://github.com/17cupsofcoffee/Tetra) - rendering/input/windowing/etc
 * [specs](https://github.com/slide-rs/specs) - ECS
 
 ## Building
