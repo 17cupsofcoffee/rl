@@ -85,10 +85,13 @@ impl<'a> State for GameState<'a> {
         {
             let mut input_state = self.world.write_resource::<resources::Input>();
 
-            input_state.up = input::is_key_down(ctx, Key::Up);
-            input_state.down = input::is_key_down(ctx, Key::Down);
-            input_state.left = input::is_key_down(ctx, Key::Left);
-            input_state.right = input::is_key_down(ctx, Key::Right);
+            input_state.up = input::is_key_down(ctx, Key::Up) || input::is_key_down(ctx, Key::W);
+            input_state.down =
+                input::is_key_down(ctx, Key::Down) || input::is_key_down(ctx, Key::S);
+            input_state.left =
+                input::is_key_down(ctx, Key::Left) || input::is_key_down(ctx, Key::A);
+            input_state.right =
+                input::is_key_down(ctx, Key::Right) || input::is_key_down(ctx, Key::D);
         }
 
         self.dispatcher.dispatch(&self.world.res);
