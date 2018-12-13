@@ -1,6 +1,8 @@
-use specs::Entity;
 use std::collections::HashMap;
 
+use specs::Entity;
+
+#[derive(Default)]
 pub struct Input {
     pub up: bool,
     pub down: bool,
@@ -19,6 +21,7 @@ impl Input {
     }
 }
 
+#[derive(Default)]
 pub struct TurnState {
     pub waiting: bool,
 }
@@ -29,6 +32,7 @@ impl TurnState {
     }
 }
 
+#[derive(Default)]
 pub struct Map {
     pub tiles: HashMap<(i32, i32), Entity>,
 }

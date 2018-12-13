@@ -1,5 +1,5 @@
-extern crate ggez;
 extern crate specs;
+extern crate tetra;
 
 mod components;
 mod console;
@@ -7,24 +7,22 @@ mod entities;
 mod resources;
 mod systems;
 
-use console::Console;
-use ggez::conf::{WindowMode, WindowSetup};
-use ggez::event::{self, EventHandler, Keycode, Mod};
-use ggez::graphics::{self, Image};
-use ggez::timer;
-use ggez::{Context, ContextBuilder, GameResult};
 use specs::{Dispatcher, DispatcherBuilder, Join, World};
-use std::env;
-use std::path::PathBuf;
+use tetra::graphics::color;
+use tetra::graphics::{self, Texture};
+use tetra::input::{self, Key};
+use tetra::{Context, ContextBuilder, State};
 
-struct State<'a> {
+use console::Console;
+
+struct GameState<'a> {
     world: World,
     dispatcher: Dispatcher<'a, 'a>,
     console: Console,
 }
 
-impl<'a> State<'a> {
-    fn new(ctx: &mut Context) -> GameResult<State<'a>> {
+impl<'a> GameState<'a> {
+    fn new(ctx: &mut Context) -> tetra::Result<GameState<'a>> {
         let mut world = World::new();
 
         world.register::<components::Position>();
@@ -37,25 +35,25 @@ impl<'a> State<'a> {
         world.add_resource(resources::TurnState::new());
 
         let dispatcher = DispatcherBuilder::new()
-            .add(systems::WaitForInput, "WaitForInput", &[])
-            .add(systems::GrantEnergy, "GrantEnergy", &["WaitForInput"])
-            .add(systems::PlayerMovement, "PlayerMovement", &["GrantEnergy"])
-            .add(
+            .with(systems::WaitForInput, "WaitForInput", &[])
+            .with(systems::GrantEnergy, "GrantEnergy", &["WaitForInput"])
+            .with(systems::PlayerMovement, "PlayerMovement", &["GrantEnergy"])
+            .with(
                 systems::BasicEnemyMovement,
                 "BasicEnemyMovement",
                 &["WaitForInput"],
             )
-            .add(
+            .with(
                 systems::ProcessMovement,
                 "ProcessMovement",
                 &["PlayerMovement", "BasicEnemyMovement"],
             )
             .build();
 
-        let font = Image::new(ctx, "/terminal.png")?;
+        let font = Texture::new(ctx, "./resources/terminal.png")?;
         let console = Console::new(font);
 
-        Ok(State {
+        Ok(GameState {
             world,
             dispatcher,
             console,
@@ -84,27 +82,30 @@ impl<'a> State<'a> {
     }
 }
 
-impl<'a> EventHandler for State<'a> {
-    fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
-        const DESIRED_FPS: u32 = 30;
+impl<'a> State for GameState<'a> {
+    fn update(&mut self, ctx: &mut Context) {
+        // TODO: Will NLL fix this?
+        {
+            let mut input_state = self.world.write_resource::<resources::Input>();
 
-        while timer::check_update_time(ctx, DESIRED_FPS) {
-            self.dispatcher.dispatch(&self.world.res);
-            self.world.maintain();
+            input_state.up = input::is_key_down(ctx, Key::Up);
+            input_state.down = input::is_key_down(ctx, Key::Down);
+            input_state.left = input::is_key_down(ctx, Key::Left);
+            input_state.right = input::is_key_down(ctx, Key::Right);
         }
 
-        Ok(())
+        self.dispatcher.dispatch(&self.world.res);
+        self.world.maintain();
     }
 
-    fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
-        graphics::clear(ctx);
-        graphics::set_background_color(ctx, graphics::BLACK);
+    fn draw(&mut self, ctx: &mut Context, _dt: f64) {
+        graphics::clear(ctx, color::BLACK);
 
         self.console.clear();
 
-        let positions = self.world.read::<components::Position>();
-        let sprites = self.world.read::<components::Sprite>();
-        let tiles = self.world.read::<components::Tile>();
+        let positions = self.world.read_storage::<components::Position>();
+        let sprites = self.world.read_storage::<components::Sprite>();
+        let tiles = self.world.read_storage::<components::Tile>();
 
         for (position, tile) in (&positions, &tiles).join() {
             self.console.set_bg(position.x, position.y, tile.color);
@@ -115,55 +116,21 @@ impl<'a> EventHandler for State<'a> {
                 .set_char(position.x, position.y, sprite.character, sprite.color);
         }
 
-        self.console.draw(ctx)?;
-        graphics::present(ctx);
-
-        timer::yield_now();
-        Ok(())
-    }
-
-    fn key_down_event(&mut self, ctx: &mut Context, keycode: Keycode, _keymod: Mod, _repeat: bool) {
-        let mut input = self.world.write_resource::<resources::Input>();
-
-        match keycode {
-            Keycode::Up => input.up = true,
-            Keycode::Down => input.down = true,
-            Keycode::Left => input.left = true,
-            Keycode::Right => input.right = true,
-            Keycode::Escape => ctx.quit().unwrap(),
-            _ => (),
-        }
-    }
-
-    fn key_up_event(&mut self, _ctx: &mut Context, keycode: Keycode, _keymod: Mod, _repeat: bool) {
-        let mut input = self.world.write_resource::<resources::Input>();
-
-        match keycode {
-            Keycode::Up => input.up = false,
-            Keycode::Down => input.down = false,
-            Keycode::Left => input.left = false,
-            Keycode::Right => input.right = false,
-            _ => (),
-        }
+        self.console.draw(ctx);
     }
 }
 
-fn main() -> GameResult<()> {
-    let mut cb = ContextBuilder::new("rl", "17cupsofcoffee")
-        .window_setup(WindowSetup::default().title("Generic Roguelike #7026"))
-        .window_mode(WindowMode::default().dimensions(80 * 8, 50 * 8));
+fn main() -> tetra::Result {
+    let ctx = &mut ContextBuilder::new()
+        .title("Generic Roguelike #7026")
+        .size(80 * 8, 50 * 8)
+        .tick_rate(1.0 / 30.0)
+        .quit_on_escape(true)
+        .build()?;
 
-    if let Ok(manifest_dir) = env::var("CARGO_MANIFEST_DIR") {
-        let mut path = PathBuf::from(manifest_dir);
-        path.push("resources");
-        println!("Adding path {:?}", path);
-        cb = cb.add_resource_path(path);
-    }
-
-    let ctx = &mut cb.build()?;
-    let state = &mut State::new(ctx)?;
+    let state = &mut GameState::new(ctx)?;
 
     state.generate_map();
 
-    event::run(ctx, state)
+    tetra::run(ctx, state)
 }

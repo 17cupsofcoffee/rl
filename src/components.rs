@@ -1,6 +1,7 @@
-use ggez::graphics::Color;
-use specs::{Component, NullStorage, VecStorage};
 use std::collections::VecDeque;
+
+use specs::{Component, NullStorage, VecStorage};
+use tetra::graphics::Color;
 
 pub struct Position {
     pub x: i32,
