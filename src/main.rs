@@ -13,7 +13,7 @@ use tetra::graphics::{self, Texture};
 use tetra::input::{self, Key};
 use tetra::{Context, ContextBuilder, State};
 
-use console::Console;
+use crate::console::Console;
 
 struct GameState<'a> {
     world: World,

@@ -2,7 +2,7 @@ use specs::{Builder, Entity, World};
 use tetra::graphics::color;
 use tetra::graphics::Color;
 
-use components::*;
+use crate::components::*;
 
 pub fn create_player(world: &mut World, x: i32, y: i32) -> Entity {
         world.create_entity()

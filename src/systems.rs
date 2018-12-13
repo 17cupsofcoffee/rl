@@ -1,7 +1,7 @@
 use specs::{Join, Read, ReadStorage, System, Write, WriteStorage};
 
-use components::{MoveAction, Movement, Position, Solid};
-use resources::{Input, Map, TurnState};
+use crate::components::{MoveAction, Movement, Position, Solid};
+use crate::resources::{Input, Map, TurnState};
 
 pub struct GrantEnergy;
 
