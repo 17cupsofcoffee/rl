@@ -1,11 +1,12 @@
-use components::{MoveAction, Movement, Position, Solid};
-use resources::{Input, Map, TurnState};
-use specs::{Fetch, FetchMut, Join, ReadStorage, System, WriteStorage};
+use specs::{Join, Read, ReadStorage, System, Write, WriteStorage};
+
+use crate::components::{MoveAction, Movement, Position, Solid};
+use crate::resources::{Input, Map, TurnState};
 
 pub struct GrantEnergy;
 
 impl<'a> System<'a> for GrantEnergy {
-    type SystemData = (Fetch<'a, TurnState>, WriteStorage<'a, Movement>);
+    type SystemData = (Read<'a, TurnState>, WriteStorage<'a, Movement>);
 
     fn run(&mut self, (turn_state, mut movements): Self::SystemData) {
         if !turn_state.waiting {
@@ -19,7 +20,7 @@ impl<'a> System<'a> for GrantEnergy {
 pub struct WaitForInput;
 
 impl<'a> System<'a> for WaitForInput {
-    type SystemData = (FetchMut<'a, TurnState>, ReadStorage<'a, Movement>);
+    type SystemData = (Write<'a, TurnState>, ReadStorage<'a, Movement>);
 
     fn run(&mut self, (mut turn_state, movements): Self::SystemData) {
         turn_state.waiting = (&movements).join().any(|m| m.player_input && m.ready());
@@ -29,7 +30,7 @@ impl<'a> System<'a> for WaitForInput {
 pub struct PlayerMovement;
 
 impl<'a> System<'a> for PlayerMovement {
-    type SystemData = (Fetch<'a, Input>, WriteStorage<'a, Movement>);
+    type SystemData = (Read<'a, Input>, WriteStorage<'a, Movement>);
 
     fn run(&mut self, (input, mut movements): Self::SystemData) {
         for movement in (&mut movements).join() {
@@ -72,8 +73,8 @@ pub struct ProcessMovement;
 
 impl<'a> System<'a> for ProcessMovement {
     type SystemData = (
-        FetchMut<'a, TurnState>,
-        Fetch<'a, Map>,
+        Write<'a, TurnState>,
+        Read<'a, Map>,
         WriteStorage<'a, Movement>,
         WriteStorage<'a, Position>,
         ReadStorage<'a, Solid>,

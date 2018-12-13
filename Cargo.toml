@@ -2,10 +2,11 @@
 name = "rl"
 version = "0.1.0"
 authors = ["Joe Clay <27cupsofcoffee@gmail.com>"]
+edition = "2018"
 
 [dependencies]
-ggez = "0.4.2"
-specs = "0.10.0"
+tetra = { git = "https://github.com/17cupsofcoffee/tetra", rev = "367fffc" }
+specs = "0.14.1"
 
 [profile.dev]
 opt-level = 2
