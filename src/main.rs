@@ -81,7 +81,6 @@ impl<'a> GameState<'a> {
 
 impl<'a> State for GameState<'a> {
     fn update(&mut self, ctx: &mut Context) {
-        // TODO: Will NLL fix this?
         {
             let mut input_state = self.world.write_resource::<resources::Input>();
 
