@@ -1,6 +1,3 @@
-extern crate specs;
-extern crate tetra;
-
 mod components;
 mod console;
 mod entities;
@@ -11,7 +8,7 @@ use specs::{Dispatcher, DispatcherBuilder, Join, World};
 use tetra::graphics::color;
 use tetra::graphics::{self, Texture};
 use tetra::input::{self, Key};
-use tetra::{Context, ContextBuilder, State};
+use tetra::{self, Context, ContextBuilder, State};
 
 use crate::console::Console;
 
