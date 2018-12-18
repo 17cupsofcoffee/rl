@@ -57,37 +57,41 @@ impl Console {
     pub fn draw(&mut self, ctx: &mut Context) {
         for (i, cell) in self.cells.iter().enumerate() {
             let (x, y) = (i % 80, i / 80);
-
             let sprite_x = (219 / 16) as f32 * 8.0;
             let sprite_y = (219 % 16) as f32 * 8.0;
 
-            graphics::draw(
-                ctx,
-                &self.font,
-                DrawParams::new()
-                    .position(Vec2::new(
-                        self.cell_size * x as f32,
-                        self.cell_size * y as f32,
-                    ))
-                    .color(cell.background)
-                    .clip(Rectangle::new(sprite_x, sprite_y, 8.0, 8.0)),
-            );
+            // TODO: Clean this up once Color implements PartialEq
+            if cell.background.r != 0.0 && cell.background.g != 0.0 && cell.background.b != 0.0 {
+                graphics::draw(
+                    ctx,
+                    &self.font,
+                    DrawParams::new()
+                        .position(Vec2::new(
+                            self.cell_size * x as f32,
+                            self.cell_size * y as f32,
+                        ))
+                        .color(cell.background)
+                        .clip(Rectangle::new(sprite_x, sprite_y, 8.0, 8.0)),
+                );
+            }
 
-            let codepoint = cell.glyph as u8;
-            let sprite_x = f32::from(codepoint / 16) * 8.0;
-            let sprite_y = f32::from(codepoint % 16) * 8.0;
+            if cell.glyph != ' ' {
+                let codepoint = cell.glyph as u8;
+                let sprite_x = f32::from(codepoint / 16) * 8.0;
+                let sprite_y = f32::from(codepoint % 16) * 8.0;
 
-            graphics::draw(
-                ctx,
-                &self.font,
-                DrawParams::new()
-                    .position(Vec2::new(
-                        self.cell_size * x as f32,
-                        self.cell_size * y as f32,
-                    ))
-                    .color(cell.foreground)
-                    .clip(Rectangle::new(sprite_x, sprite_y, 8.0, 8.0)),
-            );
+                graphics::draw(
+                    ctx,
+                    &self.font,
+                    DrawParams::new()
+                        .position(Vec2::new(
+                            self.cell_size * x as f32,
+                            self.cell_size * y as f32,
+                        ))
+                        .color(cell.foreground)
+                        .clip(Rectangle::new(sprite_x, sprite_y, 8.0, 8.0)),
+                );
+            }
         }
     }
 }
