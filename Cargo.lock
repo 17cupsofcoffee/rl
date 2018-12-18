@@ -683,7 +683,7 @@ name = "rl"
 version = "0.1.0"
 dependencies = [
  "specs 0.14.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "tetra 0.1.6 (git+https://github.com/17cupsofcoffee/tetra?rev=367fffc)",
+ "tetra 0.1.6 (git+https://github.com/17cupsofcoffee/tetra?rev=d1f6dbe)",
 ]
 
 [[package]]
@@ -860,7 +860,7 @@ dependencies = [
 [[package]]
 name = "tetra"
 version = "0.1.6"
-source = "git+https://github.com/17cupsofcoffee/tetra?rev=367fffc#367fffc30d2136e78f1185eb045fc02985885afe"
+source = "git+https://github.com/17cupsofcoffee/tetra?rev=d1f6dbe#d1f6dbec78c63f2c08aee56a31b6ad019d5ec44a"
 dependencies = [
  "fnv 1.0.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "gl 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -1046,7 +1046,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum stb_truetype 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)" = "52ce2b38abdd11cffbc68928810248e0dd003fea489a88a404dc1ba7ae2d5538"
 "checksum syn 0.10.8 (registry+https://github.com/rust-lang/crates.io-index)" = "58fd09df59565db3399efbba34ba8a2fec1307511ebd245d0061ff9d42691673"
 "checksum syn 0.15.22 (registry+https://github.com/rust-lang/crates.io-index)" = "ae8b29eb5210bc5cf63ed6149cbf9adfc82ac0be023d8735c176ee74a2db4da7"
-"checksum tetra 0.1.6 (git+https://github.com/17cupsofcoffee/tetra?rev=367fffc)" = "<none>"
+"checksum tetra 0.1.6 (git+https://github.com/17cupsofcoffee/tetra?rev=d1f6dbe)" = "<none>"
 "checksum tiff 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)" = "a2cc6c4fd13cb1cfd20abdb196e794ceccb29371855b7e7f575945f920a5b3c2"
 "checksum tuple_utils 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)" = "cbfecd7bb8f0a3e96b3b31c46af2677a55a588767c0091f484601424fcb20e7e"
 "checksum typenum 1.10.0 (registry+https://github.com/rust-lang/crates.io-index)" = "612d636f949607bdf9b123b4a6f6d966dedf3ff669f7f045890d3a4a73948169"

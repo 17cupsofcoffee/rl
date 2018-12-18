@@ -8,7 +8,7 @@ use specs::{Dispatcher, DispatcherBuilder, Join, World};
 use tetra::graphics::color;
 use tetra::graphics::{self, Texture};
 use tetra::input::{self, Key};
-use tetra::{self, Context, ContextBuilder, State};
+use tetra::{Context, ContextBuilder, State};
 
 use crate::console::Console;
 
@@ -80,7 +80,7 @@ impl<'a> GameState<'a> {
 }
 
 impl<'a> State for GameState<'a> {
-    fn update(&mut self, ctx: &mut Context) {
+    fn update(&mut self, ctx: &mut Context) -> tetra::Result {
         {
             let mut input_state = self.world.write_resource::<resources::Input>();
 
@@ -95,9 +95,11 @@ impl<'a> State for GameState<'a> {
 
         self.dispatcher.dispatch(&self.world.res);
         self.world.maintain();
+
+        Ok(())
     }
 
-    fn draw(&mut self, ctx: &mut Context, _dt: f64) {
+    fn draw(&mut self, ctx: &mut Context, _dt: f64) -> tetra::Result {
         graphics::clear(ctx, color::BLACK);
 
         self.console.clear();
@@ -116,14 +118,16 @@ impl<'a> State for GameState<'a> {
         }
 
         self.console.draw(ctx);
+
+        Ok(())
     }
 }
 
 fn main() -> tetra::Result {
-    let ctx = &mut ContextBuilder::new()
-        .title("Generic Roguelike #7026")
-        .size(80 * 8, 50 * 8)
-        .tick_rate(1.0 / 30.0)
+    let ctx = &mut ContextBuilder::new("Generic Roguelike #7026", 80 * 8, 50 * 8)
+        .tick_rate(30.0)
+        .maximized(true)
+        .resizable(true)
         .quit_on_escape(true)
         .build()?;
 
@@ -131,5 +135,5 @@ fn main() -> tetra::Result {
 
     state.generate_map();
 
-    tetra::run(ctx, state)
+    ctx.run(state)
 }
