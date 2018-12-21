@@ -1,5 +1,6 @@
 use tetra::glm::Vec2;
 use tetra::graphics::{self, Color, DrawParams, Rectangle, Texture};
+use tetra::graphics::color;
 use tetra::Context;
 
 #[derive(Clone)]
@@ -60,8 +61,7 @@ impl Console {
             let sprite_x = (219 / 16) as f32 * 8.0;
             let sprite_y = (219 % 16) as f32 * 8.0;
 
-            // TODO: Clean this up once Color implements PartialEq
-            if cell.background.r != 0.0 && cell.background.g != 0.0 && cell.background.b != 0.0 {
+            if cell.background != color::BLACK {
                 graphics::draw(
                     ctx,
                     &self.font,

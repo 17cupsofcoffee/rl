@@ -5,7 +5,7 @@ authors = ["Joe Clay <27cupsofcoffee@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-tetra = { git = "https://github.com/17cupsofcoffee/tetra", rev = "d1f6dbe" }
+tetra = "0.2.0"
 specs = "0.14.1"
 
 [profile.dev]
