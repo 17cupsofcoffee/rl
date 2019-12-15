@@ -5,9 +5,9 @@ mod resources;
 mod systems;
 
 use specs::{Dispatcher, DispatcherBuilder, Join, World};
-use tetra::graphics::color;
-use tetra::graphics::{self, Texture};
+use tetra::graphics::{self, Color, Texture};
 use tetra::input::{self, Key};
+use tetra::time::Timestep;
 use tetra::{Context, ContextBuilder, State};
 
 use crate::console::Console;
@@ -99,8 +99,8 @@ impl<'a> State for GameState<'a> {
         Ok(())
     }
 
-    fn draw(&mut self, ctx: &mut Context, _dt: f64) -> tetra::Result {
-        graphics::clear(ctx, color::BLACK);
+    fn draw(&mut self, ctx: &mut Context) -> tetra::Result {
+        graphics::clear(ctx, Color::BLACK);
 
         self.console.clear();
 
@@ -124,16 +124,13 @@ impl<'a> State for GameState<'a> {
 }
 
 fn main() -> tetra::Result {
-    let ctx = &mut ContextBuilder::new("Generic Roguelike #7026", 80 * 8, 50 * 8)
-        .tick_rate(30.0)
-        .maximized(true)
-        .resizable(true)
+    ContextBuilder::new("Generic Roguelike #7026", 80 * 8, 50 * 8)
+        .timestep(Timestep::Fixed(30.0))
         .quit_on_escape(true)
-        .build()?;
-
-    let state = &mut GameState::new(ctx)?;
-
-    state.generate_map();
-
-    ctx.run(state)
+        .build()?
+        .run(|ctx| {
+            let mut state = GameState::new(ctx)?;
+            state.generate_map();
+            Ok(state)
+        })
 }
