@@ -2,11 +2,14 @@
 
 [![Build Status](https://img.shields.io/github/workflow/status/17cupsofcoffee/rl/CI%20Build/master)](https://github.com/17cupsofcoffee/rl/actions?query=branch%3Amaster)
 
-This is a simple (and extremely work-in-progress) roguelike, written in Rust.
+This is a simple (and extremely work-in-progress) roguelike, written in Rust. It's designed to demonstrate one possible way that the ECS architecture could be applied to a roguelike.
+
 It uses:
 
 * [Tetra](https://github.com/17cupsofcoffee/Tetra) - rendering/input/windowing/etc
-* [Specs](https://github.com/slide-rs/specs) - ECS
+* [hecs](https://github.com/Ralith/hecs) - ECS
+
+There is also an [older branch](https://github.com/17cupsofcoffee/rl/tree/specs) that utilizes the [Specs ECS library](https://github.com/amethyst/specs).
 
 ## Building
 

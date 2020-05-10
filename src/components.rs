@@ -1,6 +1,5 @@
 use std::collections::VecDeque;
 
-use specs::{Component, NullStorage, VecStorage};
 use tetra::graphics::Color;
 
 pub struct Position {
@@ -14,10 +13,6 @@ impl Position {
     }
 }
 
-impl Component for Position {
-    type Storage = VecStorage<Self>;
-}
-
 pub struct Sprite {
     pub character: char,
     pub color: Color,
@@ -29,10 +24,6 @@ impl Sprite {
     }
 }
 
-impl Component for Sprite {
-    type Storage = VecStorage<Self>;
-}
-
 pub struct Tile {
     pub color: Color,
 }
@@ -41,10 +32,6 @@ impl Tile {
     pub fn new(color: Color) -> Tile {
         Tile { color }
     }
-}
-
-impl Component for Tile {
-    type Storage = VecStorage<Self>;
 }
 
 pub enum MoveAction {
@@ -76,13 +63,4 @@ impl Movement {
     }
 }
 
-impl Component for Movement {
-    type Storage = VecStorage<Self>;
-}
-
-#[derive(Default)]
 pub struct Solid;
-
-impl Component for Solid {
-    type Storage = NullStorage<Self>;
-}

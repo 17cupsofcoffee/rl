@@ -5,8 +5,8 @@ authors = ["Joe Clay <27cupsofcoffee@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-tetra = "0.3"
-specs = "0.14"
+tetra = "0.3.5"
+hecs = "0.2.12"
 
 [profile.dev.package."*"]
 opt-level = 3
