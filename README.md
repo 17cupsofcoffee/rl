@@ -1,6 +1,6 @@
 # rl
 
-[![Build Status](https://img.shields.io/github/workflow/status/17cupsofcoffee/rl/CI%20Build/master)](https://github.com/17cupsofcoffee/rl/actions?query=branch%3Amaster)
+[![Build Status](https://img.shields.io/github/workflow/status/17cupsofcoffee/rl/CI%20Build/main)](https://github.com/17cupsofcoffee/rl/actions?query=branch%main)
 
 This is a simple (and extremely work-in-progress) roguelike, written in Rust. It's designed to demonstrate one possible way that the ECS architecture could be applied to a roguelike.
 
