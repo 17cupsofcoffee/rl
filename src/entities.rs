@@ -26,11 +26,3 @@ pub fn create_rat(world: &mut World, x: i32, y: i32) -> Entity {
         Movement::new(false, 0, 4),
     ))
 }
-
-pub fn create_wall(world: &mut World, x: i32, y: i32) -> Entity {
-    world.spawn((
-        Position::new(x, y),
-        Tile::new(Color::rgb(0.2, 0.2, 0.2)),
-        Solid,
-    ))
-}

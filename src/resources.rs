@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
-use hecs::{Entity, World};
+use hecs::World;
+use tetra::graphics::Color;
 
 use crate::entities;
 
@@ -48,8 +49,13 @@ impl TurnState {
     }
 }
 
+pub struct MapTile {
+    pub color: Color,
+    pub solid: bool,
+}
+
 pub struct Map {
-    pub tiles: HashMap<(i32, i32), Entity>,
+    pub tiles: HashMap<(i32, i32), MapTile>,
 }
 
 impl Map {
@@ -59,7 +65,11 @@ impl Map {
         for x in 0..80 {
             for y in 0..50 {
                 if x == 0 || x == 79 || y == 0 || y == 49 {
-                    let tile = entities::create_wall(world, x, y);
+                    let tile = MapTile {
+                        color: Color::rgb(0.2, 0.2, 0.2),
+                        solid: true,
+                    };
+
                     tiles.insert((x, y), tile);
                 }
             }

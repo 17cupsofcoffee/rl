@@ -24,16 +24,6 @@ impl Sprite {
     }
 }
 
-pub struct Tile {
-    pub color: Color,
-}
-
-impl Tile {
-    pub fn new(color: Color) -> Tile {
-        Tile { color }
-    }
-}
-
 pub enum MoveAction {
     Up,
     Down,
@@ -62,5 +52,3 @@ impl Movement {
         self.energy >= self.speed
     }
 }
-
-pub struct Solid;

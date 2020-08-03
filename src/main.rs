@@ -59,12 +59,8 @@ impl State for GameState {
 
         self.console.clear();
 
-        let mut tile_query = self
-            .world
-            .query::<(&components::Position, &components::Tile)>();
-
-        for (_, (position, tile)) in tile_query.iter() {
-            self.console.set_bg(position.x, position.y, tile.color);
+        for ((x, y), tile) in self.resources.map.tiles.iter() {
+            self.console.set_bg(*x, *y, tile.color);
         }
 
         let mut sprite_query = self

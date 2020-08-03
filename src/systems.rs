@@ -1,6 +1,6 @@
 use hecs::World;
 
-use crate::components::{MoveAction, Movement, Position, Solid};
+use crate::components::{MoveAction, Movement, Position};
 use crate::resources::Resources;
 
 pub fn grant_energy(world: &mut World, resources: &mut Resources) {
@@ -59,9 +59,8 @@ pub fn process_movement(world: &mut World, resources: &mut Resources) {
             _ => continue,
         };
 
-        if let Some(tile_id) = resources.map.tiles.get(&(target_x, target_y)) {
-            if world.get::<Solid>(*tile_id).is_ok() {
-                // move blocked
+        if let Some(tile) = resources.map.tiles.get(&(target_x, target_y)) {
+            if tile.solid {
                 continue;
             }
         }
