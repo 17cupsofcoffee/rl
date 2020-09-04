@@ -44,14 +44,16 @@ impl Console {
         ];
     }
 
-    pub fn set_char(&mut self, x: i32, y: i32, glyph: char, color: Color) {
-        let cell = &mut self.cells[(x + 80 * y) as usize];
-        cell.glyph = glyph;
-        cell.foreground = color;
+    pub fn set_char(&mut self, x: usize, y: usize, glyph: char) {
+        self.cells[x + 80 * y].glyph = glyph;
     }
 
-    pub fn set_bg(&mut self, x: i32, y: i32, color: Color) {
-        self.cells[(x + 80 * y) as usize].background = color;
+    pub fn set_fg(&mut self, x: usize, y: usize, color: Color) {
+        self.cells[x + 80 * y].foreground = color;
+    }
+
+    pub fn set_bg(&mut self, x: usize, y: usize, color: Color) {
+        self.cells[x + 80 * y].background = color;
     }
 
     pub fn draw(&mut self, ctx: &mut Context) {

@@ -69,7 +69,8 @@ impl State for GameState {
 
         for (_, (position, sprite)) in sprite_query.iter() {
             self.console
-                .set_char(position.x, position.y, sprite.character, sprite.color);
+                .set_char(position.x, position.y, sprite.character);
+            self.console.set_fg(position.x, position.y, sprite.color);
         }
 
         self.console.draw(ctx);

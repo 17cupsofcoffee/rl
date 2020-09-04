@@ -55,7 +55,7 @@ pub struct MapTile {
 }
 
 pub struct Map {
-    pub tiles: HashMap<(i32, i32), MapTile>,
+    pub tiles: HashMap<(usize, usize), MapTile>,
 }
 
 impl Map {
