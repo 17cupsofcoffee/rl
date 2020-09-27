@@ -13,10 +13,12 @@ pub struct Console {
     font: Texture,
     cells: Vec<ConsoleCell>,
     cell_size: f32,
+    width: usize,
+    height: usize,
 }
 
 impl Console {
-    pub fn new(font: Texture) -> Console {
+    pub fn new(font: Texture, width: usize, height: usize) -> Console {
         let cell_size = (font.width() / 16) as f32;
 
         Console {
@@ -27,9 +29,11 @@ impl Console {
                     foreground: Color::rgb(1.0, 1.0, 1.0),
                     background: Color::rgb(0.0, 0.0, 0.0),
                 };
-                80 * 50
+                width * height
             ],
             cell_size,
+            width,
+            height,
         }
     }
 
@@ -40,25 +44,25 @@ impl Console {
                 foreground: Color::rgb(1.0, 1.0, 1.0),
                 background: Color::rgb(0.0, 0.0, 0.0),
             };
-            80 * 50
+            self.width * self.height
         ];
     }
 
     pub fn set_char(&mut self, x: usize, y: usize, glyph: char) {
-        self.cells[x + 80 * y].glyph = glyph;
+        self.cells[x + y * self.width].glyph = glyph;
     }
 
     pub fn set_fg(&mut self, x: usize, y: usize, color: Color) {
-        self.cells[x + 80 * y].foreground = color;
+        self.cells[x + y * self.width].foreground = color;
     }
 
     pub fn set_bg(&mut self, x: usize, y: usize, color: Color) {
-        self.cells[x + 80 * y].background = color;
+        self.cells[x + y * self.width].background = color;
     }
 
     pub fn draw(&mut self, ctx: &mut Context) {
         for (i, cell) in self.cells.iter().enumerate() {
-            let (x, y) = (i % 80, i / 80);
+            let (x, y) = (i % self.width, i / self.width);
             let sprite_x = (219 / 16) as f32 * 8.0;
             let sprite_y = (219 % 16) as f32 * 8.0;
 

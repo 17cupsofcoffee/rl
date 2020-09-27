@@ -7,6 +7,7 @@ edition = "2018"
 [dependencies]
 tetra = { version = "0.5", default-features = false, features = ["texture_png"] }
 hecs = "0.2"
+rand = "0.7"
 
 [profile.dev.package."*"]
 opt-level = 3

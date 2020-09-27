@@ -59,7 +59,7 @@ pub fn process_movement(world: &mut World, resources: &mut Resources) {
             _ => continue,
         };
 
-        if let Some(tile) = resources.map.tiles.get(&(target_x, target_y)) {
+        if let Some(tile) = resources.map.get(target_x, target_y) {
             if tile.solid {
                 continue;
             }

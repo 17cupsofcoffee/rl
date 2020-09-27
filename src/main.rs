@@ -13,6 +13,9 @@ use tetra::{Context, ContextBuilder, State};
 use crate::console::Console;
 use crate::resources::Resources;
 
+const SCREEN_WIDTH: usize = 80;
+const SCREEN_HEIGHT: usize = 50;
+
 struct GameState {
     world: World,
     resources: Resources,
@@ -22,10 +25,10 @@ struct GameState {
 impl GameState {
     fn new(ctx: &mut Context) -> tetra::Result<GameState> {
         let mut world = World::new();
-        let resources = Resources::new(&mut world);
+        let resources = Resources::new(&mut world, SCREEN_WIDTH, SCREEN_HEIGHT);
 
         let font = Texture::new(ctx, "./resources/terminal.png")?;
-        let console = Console::new(font);
+        let console = Console::new(font, SCREEN_WIDTH, SCREEN_HEIGHT);
 
         Ok(GameState {
             world,
@@ -37,6 +40,10 @@ impl GameState {
 
 impl State for GameState {
     fn update(&mut self, ctx: &mut Context) -> tetra::Result {
+        if input::is_key_pressed(ctx, Key::F5) {
+            *self = GameState::new(ctx)?;
+        }
+
         self.resources.input.up =
             input::is_key_down(ctx, Key::Up) || input::is_key_down(ctx, Key::W);
         self.resources.input.down =
@@ -59,8 +66,8 @@ impl State for GameState {
 
         self.console.clear();
 
-        for ((x, y), tile) in self.resources.map.tiles.iter() {
-            self.console.set_bg(*x, *y, tile.color);
+        for (x, y, tile) in self.resources.map.tile_positions() {
+            self.console.set_bg(x, y, tile.color);
         }
 
         let mut sprite_query = self
@@ -80,9 +87,13 @@ impl State for GameState {
 }
 
 fn main() -> tetra::Result {
-    ContextBuilder::new("Generic Roguelike #7026", 80 * 8, 50 * 8)
-        .timestep(Timestep::Fixed(30.0))
-        .quit_on_escape(true)
-        .build()?
-        .run(GameState::new)
+    ContextBuilder::new(
+        "Generic Roguelike #7026",
+        SCREEN_WIDTH as i32 * 8,
+        SCREEN_HEIGHT as i32 * 8,
+    )
+    .timestep(Timestep::Fixed(30.0))
+    .quit_on_escape(true)
+    .build()?
+    .run(GameState::new)
 }
