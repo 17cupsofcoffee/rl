@@ -133,9 +133,9 @@ impl Map {
             }
         }
 
-        entities::create_player(world, rooms[0].centre().0, rooms[0].centre().1);
-        entities::create_snake(world, rooms[1].centre().0, rooms[1].centre().1);
-        entities::create_rat(world, rooms[2].centre().0, rooms[2].centre().1);
+        world.spawn(entities::player(rooms[0].centre().0, rooms[0].centre().1));
+        world.spawn(entities::snake(rooms[1].centre().0, rooms[1].centre().1));
+        world.spawn(entities::rat(rooms[2].centre().0, rooms[2].centre().1));
 
         map
     }
