@@ -1,4 +1,4 @@
-use tetra::graphics::{self, Color, DrawParams, Rectangle, Texture};
+use tetra::graphics::{Color, DrawParams, Rectangle, Texture};
 use tetra::math::Vec2;
 use tetra::Context;
 
@@ -67,16 +67,15 @@ impl Console {
             let sprite_y = (219 % 16) as f32 * 8.0;
 
             if cell.background != Color::BLACK {
-                graphics::draw(
+                self.font.draw_region(
                     ctx,
-                    &self.font,
+                    Rectangle::new(sprite_x, sprite_y, 8.0, 8.0),
                     DrawParams::new()
                         .position(Vec2::new(
                             self.cell_size * x as f32,
                             self.cell_size * y as f32,
                         ))
-                        .color(cell.background)
-                        .clip(Rectangle::new(sprite_x, sprite_y, 8.0, 8.0)),
+                        .color(cell.background),
                 );
             }
 
@@ -85,16 +84,15 @@ impl Console {
                 let sprite_x = f32::from(codepoint / 16) * 8.0;
                 let sprite_y = f32::from(codepoint % 16) * 8.0;
 
-                graphics::draw(
+                self.font.draw_region(
                     ctx,
-                    &self.font,
+                    Rectangle::new(sprite_x, sprite_y, 8.0, 8.0),
                     DrawParams::new()
                         .position(Vec2::new(
                             self.cell_size * x as f32,
                             self.cell_size * y as f32,
                         ))
-                        .color(cell.foreground)
-                        .clip(Rectangle::new(sprite_x, sprite_y, 8.0, 8.0)),
+                        .color(cell.foreground),
                 );
             }
         }

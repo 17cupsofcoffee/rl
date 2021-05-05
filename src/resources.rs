@@ -88,11 +88,11 @@ impl Map {
         let mut rooms = vec![];
 
         'attempt: for _ in 0..MAX_ATTEMPTS {
-            let x = rng.gen_range(1, map_width - 1);
-            let y = rng.gen_range(1, map_height - 1);
+            let x = rng.gen_range(1..map_width - 1);
+            let y = rng.gen_range(1..map_height - 1);
 
-            let width = usize::min(rng.gen_range(MIN_SIZE, MAX_SIZE), map_width - 1 - x);
-            let height = usize::min(rng.gen_range(MIN_SIZE, MAX_SIZE), map_height - 1 - y);
+            let width = usize::min(rng.gen_range(MIN_SIZE..MAX_SIZE), map_width - 1 - x);
+            let height = usize::min(rng.gen_range(MIN_SIZE..MAX_SIZE), map_height - 1 - y);
 
             if width < MIN_SIZE || height < MIN_SIZE {
                 continue;
