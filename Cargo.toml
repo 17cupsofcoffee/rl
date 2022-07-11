@@ -5,8 +5,8 @@ authors = ["Joe Clay <27cupsofcoffee@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-tetra = { version = "0.6", default-features = false, features = ["texture_png"] }
-hecs = "0.5"
+tetra = { version = "0.7", default-features = false, features = ["texture_png"] }
+hecs = "0.7"
 rand = "0.8"
 
 [profile.dev.package."*"]
